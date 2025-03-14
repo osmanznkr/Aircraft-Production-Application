@@ -1,0 +1,8 @@
+django
+psycopg2-binary
+djangorestframework
+drf-spectacular
+environs
+drf-standardized-errors[openapi]
+django-oauth-toolkit
+django-filter
