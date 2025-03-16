@@ -6,3 +6,4 @@ environs
 drf-standardized-errors[openapi]
 django-oauth-toolkit
 django-filter
+django-auditlog
