@@ -256,6 +256,7 @@ function formatDate(dateString) {
 
 $(document).ready(function() {
     var token = localStorage.getItem('access_token'); // Token'ı localStorage'dan al
+    var lang = localStorage.getItem('language') || 'en'; // Language from localStorage or default to 'en'
     var deleteSerialNumber; // Variable to store the serial number of the item to be deleted
 
     // Function to load select options
@@ -273,23 +274,31 @@ $(document).ready(function() {
                 data.results.forEach(function(item) {
                     select.append('<option value="' + item.type + '">' + item.name + '</option>');
                 });
+            },
+            error: function(xhr) {
+                var response = xhr.responseJSON;
+                if (response && response.errors && response.errors[0].code === "not_authenticated") {
+                    window.location.href = "/login"; // Redirect to login page
+                } else {
+                    console.error('Error loading select options:', xhr);
+                }
             }
         });
     }
 
     // Load aircraft types
-    loadSelectOptions('/aircrafts/aircraft-types', '#aircraftType');
-    loadSelectOptions('/aircrafts/aircraft-types', '#newAircraftType');
+    loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#aircraftType');
+    loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#newAircraftType');
 
     // Load inventory types
-    loadSelectOptions('/aircrafts/inventories/inventory-types', '#inventoryType');
-    loadSelectOptions('/aircrafts/inventories/inventory-types', '#newInventoryType');
+    loadSelectOptions('/' + lang + '/aircrafts/inventories/inventory-types', '#inventoryType');
+    loadSelectOptions('/' + lang + '/aircrafts/inventories/inventory-types', '#newInventoryType');
 
     function loadTable(filters) {
         $('#inventoryTable').DataTable({
             "destroy": true, // Existing table instance will be destroyed before reinitializing
             "ajax": {
-                "url": "/tr/aircrafts/inventories",
+                "url": '/' + lang + '/aircrafts/inventories',
                 "data": filters,
                 "dataSrc": "results",
                 "beforeSend": function(xhr) {
@@ -334,7 +343,7 @@ $(document).ready(function() {
     // Handle confirm delete button click
     $('#confirmDeleteButton').on('click', function() {
         $.ajax({
-            url: '/tr/aircrafts/inventories/' + deleteSerialNumber,
+            url: '/' + lang + '/aircrafts/inventories/' + deleteSerialNumber,
             method: 'DELETE',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -351,7 +360,6 @@ $(document).ready(function() {
             }
         });
     });
-
 
     // Filter form submit event
     $('#filterForm').on('submit', function(e) {
@@ -373,7 +381,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/tr/aircrafts/inventories',
+            url: '/' + lang + '/aircrafts/inventories',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(newInventory),
@@ -396,7 +404,7 @@ $(document).ready(function() {
     $('#inventoryTable').on('click', '.detail-btn', function() {
         var serialNumber = $(this).data('serial-number');
         $.ajax({
-            url: '/tr/aircrafts/inventories/' + serialNumber,
+            url: '/' + lang + '/aircrafts/inventories/' + serialNumber,
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + token);

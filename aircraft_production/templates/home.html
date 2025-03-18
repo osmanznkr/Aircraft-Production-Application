@@ -351,26 +351,32 @@
 }
 $(document).ready(function() {
     var token = localStorage.getItem('access_token');
+    var lang = localStorage.getItem('language') || 'en';
 
     function formatDate(dateString) {
         var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleString('tr-TR', options);
+        return new Date(dateString).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US', options);
     }
 
     function loadTable(filters) {
         $('#aircraftTable').DataTable({
             "destroy": true,
             "ajax": {
-                "url": "/aircrafts",
+                "url": "/" + lang + "/aircrafts",
                 "data": filters,
                 "dataSrc": "results",
                 "beforeSend": function(xhr) {
                     xhr.setRequestHeader("Authorization", "Bearer " + token);
                 },
                 "error": function(xhr, error, thrown) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.detail ? xhr.responseJSON.detail : 'An error occurred while loading data.';
-                    $('#errorModalBody').text("Error: " + errorMessage); // Set error message in modal body
-                    $('#errorModal').modal('show'); // Show error modal
+                    var response = xhr.responseJSON;
+                    if (response && response.errors && response.errors[0].code === "not_authenticated") {
+                        window.location.href = "/" + lang + "/login"; // Redirect to login page
+                    } else {
+                        var errorMessage = response && response.detail ? response.detail : 'An error occurred while loading data.';
+                        $('#errorModalBody').text("Error: " + errorMessage); // Set error message in modal body
+                        $('#errorModal').modal('show'); // Show error modal
+                    }
                 }
             },
             "columns": [
@@ -405,7 +411,7 @@ $(document).ready(function() {
         var serialNumber = data.serial_number;
 
         $.ajax({
-            url: '/aircrafts/' + serialNumber,
+            url: '/' + lang + '/aircrafts/' + serialNumber,
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -444,10 +450,19 @@ $(document).ready(function() {
     $('#logoutForm').on('submit', function() {
         localStorage.removeItem('access_token');
     });
+
+    // Set language switch based on localStorage
+    $('#languageSwitch').prop('checked', lang === 'tr');
+    $('#languageSwitch').on('change', function() {
+        var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
+        localStorage.setItem('language', selectedLang);
+        location.reload();
+    });
 });
 
 $(document).ready(function() {
     var token = localStorage.getItem('access_token');
+    var lang = localStorage.getItem('language') || 'en';
 
     // Function to load select options
     function loadSelectOptions(url, selectId) {
@@ -460,7 +475,7 @@ $(document).ready(function() {
             success: function(data) {
                 var select = $(selectId);
                 select.empty();
-                select.append('<option value="">Select Aircraft Type</option>');
+                select.append('<option value="">' + (lang === 'tr' ? 'Uçak Tipi Seçin' : 'Select Aircraft Type') + '</option>');
                 data.results.forEach(function(item) {
                     select.append('<option value="' + item.type + '">' + item.name + '</option>');
                 });
@@ -473,7 +488,7 @@ $(document).ready(function() {
 
     // Load aircraft types when modal is shown
     $('#createAircraftModal').on('show.bs.modal', function() {
-        loadSelectOptions('/aircrafts/aircraft-types', '#aircraftTypeSelect');
+        loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#aircraftTypeSelect');
         // Clear previous warnings
         $('.alert-warning').remove();
     });
@@ -481,7 +496,7 @@ $(document).ready(function() {
     // Load Inventory Options
     function loadInventoryOptions(aircraftType, inventoryType, selectId, callback) {
         $.ajax({
-            url: '/aircrafts/inventories',
+            url: '/' + lang + '/aircrafts/inventories',
             method: 'GET',
             data: {
                 aircraft_type: aircraftType,
@@ -494,7 +509,7 @@ $(document).ready(function() {
             success: function(data) {
                 var select = $(selectId);
                 select.empty();
-                select.append('<option value="">Select ' + inventoryType + '</option>');
+                select.append('<option value="">' + (lang === 'tr' ? inventoryType + ' Seçin' : 'Select ' + inventoryType) + '</option>');
                 data.results.forEach(function(item) {
                     select.append('<option value="' + item.id + '">' + item.serial_number + '</option>');
                 });
@@ -519,22 +534,22 @@ $(document).ready(function() {
             // Load inventory options and check for missing parts
             loadInventoryOptions(aircraftType, 'FUSELAGE', '#fuselageSelect', function(count) {
                 if (count === 0) {
-                    $('#fuselageSelect').after('<div class="alert alert-warning">Fuselage is missing for ' + aircraftType + '</div>');
+                    $('#fuselageSelect').after('<div class="alert alert-warning">' + (lang === 'tr' ? 'Fuselage eksik' : 'Fuselage is missing') + ' for ' + aircraftType + '</div>');
                 }
             });
             loadInventoryOptions(aircraftType, 'TAIL', '#tailSelect', function(count) {
                 if (count === 0) {
-                    $('#tailSelect').after('<div class="alert alert-warning">Tail is missing for ' + aircraftType + '</div>');
+                    $('#tailSelect').after('<div class="alert alert-warning">' + (lang === 'tr' ? 'Tail eksik' : 'Tail is missing') + ' for ' + aircraftType + '</div>');
                 }
             });
             loadInventoryOptions(aircraftType, 'WING', '#wingsSelect', function(count) {
                 if (count < 2) {
-                    $('#wingsSelect').after('<div class="alert alert-warning">At least 2 Wings are required for ' + aircraftType + '</div>');
+                    $('#wingsSelect').after('<div class="alert alert-warning">' + (lang === 'tr' ? 'En az 2 Kanat gerekli' : 'At least 2 Wings are required') + ' for ' + aircraftType + '</div>');
                 }
             });
             loadInventoryOptions(aircraftType, 'AVIONICS', '#avionicsSelect', function(count) {
                 if (count === 0) {
-                    $('#avionicsSelect').after('<div class="alert alert-warning">Avionics are missing for ' + aircraftType + '</div>');
+                    $('#avionicsSelect').after('<div class="alert alert-warning">' + (lang === 'tr' ? 'Avionics eksik' : 'Avionics are missing') + ' for ' + aircraftType + '</div>');
                 }
             });
         } else {
@@ -556,7 +571,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/tr/aircrafts/',
+            url: '/' + lang + '/aircrafts/',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(aircraftData),
@@ -565,7 +580,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 // Show success popup
-                $('body').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert">Aircraft created successfully!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                $('body').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert">' + (lang === 'tr' ? 'Uçak başarıyla oluşturuldu!' : 'Aircraft created successfully!') + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                 // Close the modal
                 $('#createAircraftModal').modal('hide');
                 // Optionally, reload the page or update the table
@@ -594,16 +609,13 @@ $(document).ready(function() {
         });
     });
 
-    // Clear errors when modal is hidden
-    $('#createAircraftModal').on('hidden.bs.modal', function() {
-        $('.component-card .alert-danger').remove();
-        $('.alert-warning').remove();
-        $('.general-error').remove();
+    // Set language switch based on localStorage
+    $('#languageSwitch').prop('checked', lang === 'tr');
+    $('#languageSwitch').on('change', function() {
+        var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
+        localStorage.setItem('language', selectedLang);
+        location.reload();
     });
-
-    // Load aircraft types
-    loadSelectOptions('/aircrafts/aircraft-types', '#aircraftType');
-    loadSelectOptions('/aircrafts/aircraft-types', '#aircraftTypeSelect');
 });
 </script>
 </body>
