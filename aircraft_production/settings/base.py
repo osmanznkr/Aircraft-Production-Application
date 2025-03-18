@@ -32,6 +32,9 @@ DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = env.str('ALLOWED_HOSTS').split(" ")
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +57,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_standardized_errors',
     'auditlog',
+    'corsheaders',
 
 ]
 
@@ -61,6 +65,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # for i18n
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -128,6 +134,8 @@ AUTH_USER_MODEL = 'accounts.User'
 LOCALE_PATHS = [
     Path.joinpath(BASE_DIR.parent / 'assets/locale')
 ]
+
+
 
 LANGUAGE_CODE = 'en'
 LANGUAGES = [

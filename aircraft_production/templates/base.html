@@ -91,7 +91,7 @@
             var lang = localStorage.getItem('language') || 'en';
             if (token) {
                 $.ajax({
-                    url: "http://127.0.0.1:8000/" + lang + "/accounts/my-profile",
+                    url: "{{ token_url }} + lang + "/accounts/my-profile",
                     method: "GET",
                     beforeSend: function(xhr) {
                         xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -115,7 +115,7 @@
 
         function checkPermissions(token, lang) {
             $.ajax({
-                url: "http://127.0.0.1:8000/" + lang + "/permissions/my",
+                url: "{{ token_url }} + lang + "/permissions/my",
                 method: "GET",
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Bearer " + token);

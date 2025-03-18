@@ -46,7 +46,7 @@
 
             // Send POST request to get the token
             $.ajax({
-                url: "http://127.0.0.1:8000/o/token/",
+                url: "{{ token_url }}",
                 method: "POST",
                 contentType: "application/json", // Send as JSON
                 data: JSON.stringify({ // Convert to JSON
