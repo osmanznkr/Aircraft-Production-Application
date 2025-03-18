@@ -1,0 +1,613 @@
+<!-- home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircraft Production System</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --accent-color: #FF6B6B;
+            --light-bg: #F8F9FA;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .dashboard-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-jet {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dataTables_wrapper {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .active {
+            background: #28A745;
+        }
+
+        .inactive {
+            background: #DC3545;
+        }
+
+        .component-card {
+            background: var(--light-bg);
+            border-left: 4px solid var(--secondary-color);
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-header">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1><i class="fas fa-plane-departure"></i> Aircraft Production System</h1>
+            <button class="btn btn-jet" data-toggle="modal" data-target="#createAircraftModal">
+                <i class="fas fa-plus-circle"></i> New Aircraft
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="filter-section">
+        <form id="filterForm" class="form-inline">
+            <div class="form-group mb-2">
+                <label for="aircraftType" class="mr-2">Aircraft Type:</label>
+                <select id="aircraftType" class="form-control">
+                    <option value="">All Types</option>
+                </select>
+            </div>
+            <div class="form-group mb-2 ml-3">
+                <label for="isActive" class="mr-2">Status:</label>
+                <select id="isActive" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-jet btn-sm ml-3 mb-2">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+        </form>
+    </div>
+
+
+    <!-- Aircraft Table -->
+    <div class="card-custom">
+        <div class="card-body">
+            <table id="aircraftTable" class="table table-hover table-striped" style="width:100%">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Type</th>
+                        <th>Assembled By</th>
+                        <th>Assembly Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Aircraft Modal -->
+<div class="modal fade" id="createAircraftModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plane"></i> New Aircraft Assembly</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createAircraftForm">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Aircraft Type</label>
+                        <select id="aircraftTypeSelect" class="form-control form-control-lg">
+                            <option value="">Select Aircraft Model</option>
+                        </select>
+                    </div>
+
+                    <div class="components-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="component-card">
+                                    <label><i class="fas fa-cube"></i> Fuselage</label>
+                                    <select id="fuselageSelect" class="form-control" disabled></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="component-card">
+                                    <label><i class="fas fa-arrow-up"></i> Tail</label>
+                                    <select id="tailSelect" class="form-control" disabled></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="component-card">
+                                    <label><i class="fas fa-fan"></i> Wings</label>
+                                    <select id="wingsSelect" class="form-control" disabled multiple></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="component-card">
+                                    <label><i class="fas fa-microchip"></i> Avionics</label>
+                                    <select id="avionicsSelect" class="form-control" disabled multiple></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-jet btn-block mt-4">
+                        <i class="fas fa-rocket"></i> Start Assembly
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-plane"></i> Aircraft Details -
+                    <span id="detail-serial" class="badge badge-light"></span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card-custom mb-4">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-3 text-muted">
+                                    <i class="fas fa-info-circle"></i> General Information
+                                </h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Status
+                                        <span class="badge badge-success" id="detail-status"></span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <small class="text-muted">Aircraft Type</small>
+                                        <div id="detail-aircraft-type"></div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <small class="text-muted">Assembled By</small>
+                                        <div id="detail-assembled-by"></div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <small class="text-muted">Assembly Date</small>
+                                        <div id="detail-assembly-date"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card-custom">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-3 text-muted">
+                                    <i class="fas fa-cogs"></i> Components
+                                </h6>
+
+                                <!-- Fuselage -->
+                                <div class="component-card mb-3">
+                                    <small class="text-muted"><i class="fas fa-cube"></i> Fuselage</small>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-fuselage-sn"></div>
+                                            <small>Serial Number</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-fuselage-producer"></div>
+                                            <small>Producer</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-fuselage-date"></div>
+                                            <small>Production Date</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tail -->
+                                <div class="component-card mb-3">
+                                    <small class="text-muted"><i class="fas fa-arrow-up"></i> Tail</small>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-tail-sn"></div>
+                                            <small>Serial Number</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-tail-producer"></div>
+                                            <small>Producer</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="font-weight-bold" id="detail-tail-date"></div>
+                                            <small>Production Date</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Wings -->
+                                <div class="component-card mb-3">
+                                    <small class="text-muted"><i class="fas fa-fan"></i> Wings</small>
+                                    <div class="row" id="wings-list"></div>
+                                </div>
+
+                                <!-- Avionics -->
+                                <div class="component-card">
+                                    <small class="text-muted"><i class="fas fa-microchip"></i> Avionics</small>
+                                    <div class="row" id="avionics-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="errorModalBody">
+                <!-- Error message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function formatDate(dateString) {
+    var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleString('tr-TR', options);
+}
+$(document).ready(function() {
+    var token = localStorage.getItem('access_token');
+
+    function formatDate(dateString) {
+        var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('tr-TR', options);
+    }
+
+    function loadTable(filters) {
+        $('#aircraftTable').DataTable({
+            "destroy": true,
+            "ajax": {
+                "url": "/aircrafts",
+                "data": filters,
+                "dataSrc": "results",
+                "beforeSend": function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                "error": function(xhr, error, thrown) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.detail ? xhr.responseJSON.detail : 'An error occurred while loading data.';
+                    $('#errorModalBody').text("Error: " + errorMessage); // Set error message in modal body
+                    $('#errorModal').modal('show'); // Show error modal
+                }
+            },
+            "columns": [
+                { "data": "serial_number" },
+                { "data": "aircraft_type" },
+                { "data": "assembled_by" },
+                { "data": "assembly_date", "render": function(data) { return formatDate(data); } },
+                {
+                    "data": null,
+                    "defaultContent": '<button class="btn btn-info btn-sm details-btn">Details</button>'
+                }
+            ]
+        });
+    }
+
+    // Initial load
+    loadTable({});
+
+    // Filter form submit event
+    $('#filterForm').on('submit', function(e) {
+        e.preventDefault();
+        var filters = {
+            aircraft_type: $('#aircraftType').val(),
+            is_active: $('#isActive').val()
+        };
+        loadTable(filters);
+    });
+
+    // Handle details button click
+    $('#aircraftTable tbody').on('click', '.details-btn', function() {
+        var data = $('#aircraftTable').DataTable().row($(this).parents('tr')).data();
+        var serialNumber = data.serial_number;
+
+        $.ajax({
+            url: '/aircrafts/' + serialNumber,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                $('#detail-serial').text(data.serial_number);
+                $('#detail-status').text(data.is_active ? 'Active' : 'Inactive').toggleClass('badge-success', data.is_active).toggleClass('badge-danger', !data.is_active);
+                $('#detail-aircraft-type').text(data.aircraft_type);
+                $('#detail-assembled-by').text(data.assembled_by);
+                $('#detail-assembly-date').text(formatDate(data.assembly_date));
+                $('#detail-fuselage-sn').text(data.fuselage.serial_number);
+                $('#detail-fuselage-producer').text(data.fuselage.produced_by);
+                $('#detail-fuselage-date').text(formatDate(data.fuselage.production_date));
+                $('#detail-tail-sn').text(data.tail.serial_number);
+                $('#detail-tail-producer').text(data.tail.produced_by);
+                $('#detail-tail-date').text(formatDate(data.tail.production_date));
+
+                var wingsList = $('#wings-list');
+                wingsList.empty();
+                data.wings.forEach(function(wing) {
+                    wingsList.append('<div class="col-md-4"><div class="font-weight-bold">' + wing.serial_number + '</div><small>Serial Number</small></div><div class="col-md-4"><div class="font-weight-bold">' + wing.produced_by + '</div><small>Producer</small></div><div class="col-md-4"><div class="font-weight-bold">' + formatDate(wing.production_date) + '</div><small>Production Date</small></div>');
+                });
+
+                var avionicsList = $('#avionics-list');
+                avionicsList.empty();
+                data.avionics.forEach(function(avionic) {
+                    avionicsList.append('<div class="col-md-4"><div class="font-weight-bold">' + avionic.serial_number + '</div><small>Serial Number</small></div><div class="col-md-4"><div class="font-weight-bold">' + avionic.produced_by + '</div><small>Producer</small></div><div class="col-md-4"><div class="font-weight-bold">' + formatDate(avionic.production_date) + '</div><small>Production Date</small></div>');
+                });
+
+                $('#detailsModal').modal('show');
+            }
+        });
+    });
+
+    // Clear token on logout
+    $('#logoutForm').on('submit', function() {
+        localStorage.removeItem('access_token');
+    });
+});
+
+$(document).ready(function() {
+    var token = localStorage.getItem('access_token');
+
+    // Function to load select options
+    function loadSelectOptions(url, selectId) {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                var select = $(selectId);
+                select.empty();
+                select.append('<option value="">Select Aircraft Type</option>');
+                data.results.forEach(function(item) {
+                    select.append('<option value="' + item.type + '">' + item.name + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading select options:', error);
+            }
+        });
+    }
+
+    // Load aircraft types when modal is shown
+    $('#createAircraftModal').on('show.bs.modal', function() {
+        loadSelectOptions('/aircrafts/aircraft-types', '#aircraftTypeSelect');
+        // Clear previous warnings
+        $('.alert-warning').remove();
+    });
+
+    // Load Inventory Options
+    function loadInventoryOptions(aircraftType, inventoryType, selectId, callback) {
+        $.ajax({
+            url: '/aircrafts/inventories',
+            method: 'GET',
+            data: {
+                aircraft_type: aircraftType,
+                inventory_type: inventoryType,
+                is_used: false
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                var select = $(selectId);
+                select.empty();
+                select.append('<option value="">Select ' + inventoryType + '</option>');
+                data.results.forEach(function(item) {
+                    select.append('<option value="' + item.id + '">' + item.serial_number + '</option>');
+                });
+                select.prop('disabled', false); // Enable the select field
+                if (callback) callback(data.results.length);
+            }
+        });
+    }
+
+    // On Aircraft Type Change
+    $('#aircraftTypeSelect').on('change', function() {
+        var aircraftType = $(this).val();
+        // Clear previous warnings and errors
+        $('.alert-warning').remove();
+        $('.component-card .alert-danger').remove();
+        $('.general-error').remove();
+
+        if (aircraftType) {
+            // Enable Fuselage, Tail, Wings, Avionics select fields
+            $('#fuselageSelect, #tailSelect, #wingsSelect, #avionicsSelect').prop('disabled', false);
+
+            // Load inventory options and check for missing parts
+            loadInventoryOptions(aircraftType, 'FUSELAGE', '#fuselageSelect', function(count) {
+                if (count === 0) {
+                    $('#fuselageSelect').after('<div class="alert alert-warning">Fuselage is missing for ' + aircraftType + '</div>');
+                }
+            });
+            loadInventoryOptions(aircraftType, 'TAIL', '#tailSelect', function(count) {
+                if (count === 0) {
+                    $('#tailSelect').after('<div class="alert alert-warning">Tail is missing for ' + aircraftType + '</div>');
+                }
+            });
+            loadInventoryOptions(aircraftType, 'WING', '#wingsSelect', function(count) {
+                if (count < 2) {
+                    $('#wingsSelect').after('<div class="alert alert-warning">At least 2 Wings are required for ' + aircraftType + '</div>');
+                }
+            });
+            loadInventoryOptions(aircraftType, 'AVIONICS', '#avionicsSelect', function(count) {
+                if (count === 0) {
+                    $('#avionicsSelect').after('<div class="alert alert-warning">Avionics are missing for ' + aircraftType + '</div>');
+                }
+            });
+        } else {
+            // Disable other select fields if no aircraft type is selected
+            $('#fuselageSelect, #tailSelect, #wingsSelect, #avionicsSelect').prop('disabled', true);
+        }
+    });
+
+    // Form Submit
+    $('#createAircraftForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var aircraftData = {
+            aircraft_type: $('#aircraftTypeSelect').val(),
+            fuselage: $('#fuselageSelect').val(),
+            tail: $('#tailSelect').val(),
+            wings: $('#wingsSelect').val() ? $('#wingsSelect').val() : [],
+            avionics: $('#avionicsSelect').val() ? $('#avionicsSelect').val() : []
+        };
+
+        $.ajax({
+            url: '/tr/aircrafts/',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(aircraftData),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(response) {
+                // Show success popup
+                $('body').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert">Aircraft created successfully!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                // Close the modal
+                $('#createAircraftModal').modal('hide');
+                // Optionally, reload the page or update the table
+                window.location.href = '/';
+            },
+            error: function(xhr, status, error) {
+                var response = JSON.parse(xhr.responseText);
+                // Clear previous error messages
+                $('.component-card .alert-danger').remove();
+                $('.general-error').remove();
+                response.errors.forEach(function(err) {
+                    var errorMessage = '<div class="alert alert-danger">' + err.detail + '</div>';
+                    if (err.attr === 'fuselage') {
+                        $('#fuselageSelect').after(errorMessage);
+                    } else if (err.attr === 'tail') {
+                        $('#tailSelect').after(errorMessage);
+                    } else if (err.attr === 'wings') {
+                        $('#wingsSelect').after(errorMessage);
+                    } else if (err.attr === 'avionics') {
+                        $('#avionicsSelect').after(errorMessage);
+                    } else if (err.attr === 'non_field_errors') {
+                        $('#createAircraftForm').prepend('<div class="alert alert-danger general-error">' + err.detail + '</div>');
+                    }
+                });
+            }
+        });
+    });
+
+    // Clear errors when modal is hidden
+    $('#createAircraftModal').on('hidden.bs.modal', function() {
+        $('.component-card .alert-danger').remove();
+        $('.alert-warning').remove();
+        $('.general-error').remove();
+    });
+
+    // Load aircraft types
+    loadSelectOptions('/aircrafts/aircraft-types', '#aircraftType');
+    loadSelectOptions('/aircrafts/aircraft-types', '#aircraftTypeSelect');
+});
+</script>
+</body>
+</html>
+
+
+{% endblock %}
