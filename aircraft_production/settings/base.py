@@ -14,14 +14,13 @@ from pathlib import Path
 
 from environs import Env
 
-# Read environment variables from .env file
 env = Env()
 env.read_env(
-    override=True
+    override=True  # Read environment variables from .env file firstly
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -74,7 +73,7 @@ ROOT_URLCONF = 'aircraft_production.urls_api'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,9 +125,13 @@ AUTH_USER_MODEL = 'accounts.User'
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+LOCALE_PATHS = [
+    Path.joinpath(BASE_DIR.parent / 'assets/locale')
+]
+
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
-    ('en', 'Engllish'),
+    ('en', 'English'),
     ('tr', 'Turkish'),
 ]
 
@@ -142,6 +145,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
