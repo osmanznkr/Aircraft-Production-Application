@@ -4,9 +4,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 
-class InventoryTypeSerializer(serializers.Serializer):
+class AircraftTypeSerializer(serializers.Serializer):
     """
-    Serializer for the get Inventory types.
+    Serializer for the aircraft type.
     """
     type = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()

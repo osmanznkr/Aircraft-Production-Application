@@ -14,7 +14,22 @@ class InventoryViewSet(mixins.CreateModelMixin,
                        mixins.DestroyModelMixin,
                        viewsets.GenericViewSet):
     """
-    Manages inventory items with create, retrieve, list, and destroy actions.
+        ViewSet for managing inventory items with create, retrieve, list, and destroy actions.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Inventory objects.
+            search_fields (tuple): Fields to search in the queryset.
+            ordering_fields (str): Fields to order the queryset.
+            lookup_field (str): Field to use for looking up objects.
+            permission_classes (list): List of permission classes.
+            perm_slug (str): Permission slug for the viewset.
+            filterset_class (FilterSet): FilterSet class for filtering the queryset.
+
+        Methods:
+            get_serializer_context(): Adds the request to the serializer context.
+            get_serializer_class(): Returns the appropriate serializer class based on the action.
+            get_queryset(): Returns the queryset based on the user's team.
+            perform_destroy(instance): Prevents deletion of used inventories and inventories that do not belong to the user's team.
     """
     queryset = models.Inventory.objects.all()
     search_fields = ('serial_number',
@@ -66,7 +81,17 @@ class InventoryViewSet(mixins.CreateModelMixin,
 class InventoryCountViewSet(mixins.ListModelMixin,
                             viewsets.GenericViewSet):
     """
-        For aircraft, it is not designed to show how many of which inventories are in use and when they are not in use.
+    ViewSet for listing inventory counts, showing how many inventories are in use and how many are not.
+
+    Attributes:
+        queryset (QuerySet): The queryset of Inventory objects.
+        serializer_class (Serializer): The serializer class for the viewset.
+        permission_classes (list): List of permission classes.
+        perm_slug (str): Permission slug for the viewset.
+        filterset_class (FilterSet): FilterSet class for filtering the queryset.
+
+    Methods:
+        list(request, *args, **kwargs): Lists the inventory counts, annotated with used and unused counts.
     """
     queryset = models.Inventory.objects.all()
     serializer_class = serializers.InventoryCountSerializer
@@ -84,10 +109,11 @@ class InventoryCountViewSet(mixins.ListModelMixin,
             available_stock=Count('id', filter=Q(is_used=False))
         )
 
+        # Paginate the queryset if necessary
         page = self.paginate_queryset(annotated_queryset)
         if page is not None:
             serializer = serializers.InventoryCountSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
+        # Serialize the queryset and return the response
         serializer = serializers.InventoryCountSerializer(annotated_queryset, many=True)
         return Response(serializer.data)
