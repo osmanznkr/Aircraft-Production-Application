@@ -1,0 +1,79 @@
+<!-- login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">Login</h2>
+            <form id="loginForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <div id="error-message" class="text-danger mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#loginForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Get user input
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            // Send POST request to get the token
+            $.ajax({
+                url: "http://127.0.0.1:8000/o/token/",
+                method: "POST",
+                contentType: "application/json", // Send as JSON
+                data: JSON.stringify({ // Convert to JSON
+                    client_id: "{{ client_id }}",
+                    client_secret: "{{ client_secret }}",
+                    grant_type: "password",
+                    username: username,
+                    password: password
+                }),
+                success: function(response) {
+                    // Save the token to localStorage
+                    localStorage.setItem('access_token', response.access_token);
+                    window.location.href = "/"; // Redirect after getting the token
+                },
+                error: function(xhr, status, error) {
+                    // Display only the error description message below the form
+                    var response = JSON.parse(xhr.responseText);
+                    $('#error-message').text(response.error_description);
+                }
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+{% endblock %}

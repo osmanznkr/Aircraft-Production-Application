@@ -1,0 +1,188 @@
+<!-- users.html -->
+{% extends 'base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA4E6;
+            --accent-color: #FF6B6B;
+            --light-bg: #F8F9FA;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .dashboard-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-jet {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dataTables_wrapper {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-header">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1><i class="fas fa-users"></i> User List</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="form-group">
+            <label for="teamFilter">Filter by Team</label>
+            <select id="teamFilter" class="form-control">
+                <option value="">All Teams</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card-custom">
+        <div class="card-body">
+            <table id="usersTable" class="table table-hover table-striped" style="width:100%">
+                <thead class="thead-light">
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Total User Count -->
+    <div class="card-custom mt-3">
+        <div class="card-body">
+            <h5>Total Users: <span id="userCount">0</span></h5>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var token = localStorage.getItem('access_token');
+
+        // Load team types into the filter dropdown
+        $.ajax({
+            url: '/tr/accounts/team-types',
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                var teamFilter = $('#teamFilter');
+                data.results.forEach(function(team) {
+                    teamFilter.append(new Option(team.name, team.type));
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Failed to load team types:", error);
+            }
+        });
+
+        function loadTable(team) {
+            $('#usersTable').DataTable({
+                "destroy": true,
+                "ajax": {
+                    "url": "/tr/accounts/users",
+                    "data": function(d) {
+                        if (team) {
+                            d.team = team;
+                        }
+                    },
+                    "dataSrc": function(json) {
+                        $('#userCount').text(json.count);
+                        return json.results;
+                    },
+                    "beforeSend": function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    }
+                },
+                "columns": [
+                    { "data": "first_name" },
+                    { "data": "last_name" },
+                    { "data": "email" },
+                    { "data": "team" }
+                ]
+            });
+        }
+
+        // Initial load
+        loadTable();
+
+        // Filter table based on team selection
+        $('#teamFilter').change(function() {
+            var selectedTeam = $(this).val();
+            loadTable(selectedTeam);
+        });
+    });
+</script>
+</body>
+</html>
+
+{% endblock %}
