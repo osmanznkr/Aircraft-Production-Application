@@ -1,0 +1,297 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-17 22:46+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\accounts\admin.py:15
+msgid "Searchable by id, first_name, last_name, email fields."
+msgstr ""
+
+#: .\accounts\admin.py:19
+msgid "Personal info"
+msgstr "Personal info"
+
+#: .\accounts\admin.py:21
+msgid "Permissions"
+msgstr "Permissions"
+
+#: .\accounts\admin.py:32
+msgid "Important dates"
+msgstr "Important dates"
+
+#: .\accounts\admin.py:60
+msgid "Searchable by id, team, members fields."
+msgstr "Searchable by id, team, members fields."
+
+#: .\accounts\admin.py:68
+msgid "Searchable by user, team fields."
+msgstr "Searchable by user, team fields."
+
+#: .\accounts\configs.py:4
+msgid "Wing Team"
+msgstr "Wing Team"
+
+#: .\accounts\configs.py:5
+msgid "Fuselage Team"
+msgstr "Fuselage Team"
+
+#: .\accounts\configs.py:6
+msgid "Tail Team"
+msgstr "Tail Team"
+
+#: .\accounts\configs.py:7
+msgid "Avionics Team"
+msgstr "Avionics Team"
+
+#: .\accounts\configs.py:8
+msgid "Assembly Team"
+msgstr "Assembly Team"
+
+#: .\accounts\models.py:14 .\accounts\models.py:15
+msgid "First Name"
+msgstr "First Name"
+
+#: .\accounts\models.py:16 .\accounts\models.py:17
+msgid "Last Name"
+msgstr "Last Name"
+
+#: .\accounts\models.py:18
+msgid "email address"
+msgstr "email address"
+
+#: .\accounts\models.py:21
+msgid "User"
+msgstr "User"
+
+#: .\accounts\models.py:22
+msgid "Users"
+msgstr "Users"
+
+#: .\accounts\models.py:38 .\accounts\models.py:39 .\accounts\models.py:44
+msgid "Team"
+msgstr "Team"
+
+#: .\accounts\models.py:40
+msgid "Created At"
+msgstr "Created At"
+
+#: .\accounts\models.py:41
+msgid "Created at"
+msgstr "Created at"
+
+#: .\accounts\models.py:45
+msgid "Teams"
+msgstr "Teams"
+
+#: .\accounts\models.py:57
+msgid "A user can only be in one team."
+msgstr "A user can only be in one team."
+
+#: .\aircrafts\admin\aircraft_admin.py:35
+msgid "Searchable by id, serial_number, aircraft_type, assembled_by fields."
+msgstr "Searchable by id, serial_number, aircraft_type, assembled_by fields."
+
+#: .\aircrafts\admin\inventory_admin.py:12
+msgid ""
+"Searchable by id, serial_number, inventory_type, aircraft_type, produced_by "
+"fields."
+msgstr "Searchable by id, serial_number, inventory_type, aircraft_type, produced_by fields."
+
+#: .\aircrafts\configs.py:4
+msgid "TB-2"
+msgstr "TB-2"
+
+#: .\aircrafts\configs.py:5
+msgid "TB-3"
+msgstr "TB-3"
+
+#: .\aircrafts\configs.py:6
+msgid "Akıncı"
+msgstr "Akıncı"
+
+#: .\aircrafts\configs.py:7
+msgid "Kızılelma"
+msgstr "Kızılelma"
+
+#: .\aircrafts\configs.py:11
+msgid "Wing"
+msgstr "Wing"
+
+#: .\aircrafts\configs.py:12 .\aircrafts\models\aircraft_models.py:24
+#: .\aircrafts\models\aircraft_models.py:25
+msgid "Fuselage"
+msgstr "Fuselage"
+
+#: .\aircrafts\configs.py:13 .\aircrafts\models\aircraft_models.py:27
+msgid "Tail"
+msgstr "Tail"
+
+#: .\aircrafts\configs.py:14 .\aircrafts\models\aircraft_models.py:29
+#: .\aircrafts\models\aircraft_models.py:30
+msgid "Avionics"
+msgstr "Avionics"
+
+#: .\aircrafts\models\aircraft_models.py:16
+#: .\aircrafts\models\inventory_models.py:25
+msgid "Serial Number"
+msgstr "Serial Number"
+
+#: .\aircrafts\models\aircraft_models.py:17
+msgid "Serial number of aircraft"
+msgstr "Serial number of aircraft"
+
+#: .\aircrafts\models\aircraft_models.py:18
+#: .\aircrafts\models\inventory_models.py:29
+msgid "Aircraft Type"
+msgstr "Aircraft Type"
+
+#: .\aircrafts\models\aircraft_models.py:19
+#: .\aircrafts\models\inventory_models.py:30
+msgid "Aircraft type"
+msgstr "Aircraft type"
+
+#: .\aircrafts\models\aircraft_models.py:21
+#: .\aircrafts\models\aircraft_models.py:22
+msgid "Wings"
+msgstr "Wings"
+
+#: .\aircrafts\models\aircraft_models.py:32
+msgid "Assembled By"
+msgstr "Assembled By"
+
+#: .\aircrafts\models\aircraft_models.py:32
+msgid "Assembled by"
+msgstr "Assembled by"
+
+#: .\aircrafts\models\aircraft_models.py:33
+#: .\aircrafts\models\inventory_models.py:33
+msgid "Production Date"
+msgstr "Production Date"
+
+#: .\aircrafts\models\aircraft_models.py:34
+msgid "Production date of aircraft"
+msgstr "Production date of aircraft"
+
+#: .\aircrafts\models\aircraft_models.py:35
+msgid "Is Active"
+msgstr "Is Active"
+
+#: .\aircrafts\models\aircraft_models.py:35
+msgid "Is active ?"
+msgstr "Is active ?"
+
+#: .\aircrafts\models\aircraft_models.py:38
+msgid "Aircraft"
+msgstr "Aircraft"
+
+#: .\aircrafts\models\aircraft_models.py:39
+msgid "Aircrafts"
+msgstr "Aircrafts"
+
+#: .\aircrafts\models\inventory_models.py:26
+msgid "Serial number of inventory"
+msgstr "Serial number of inventory"
+
+#: .\aircrafts\models\inventory_models.py:27
+msgid "Inventory Type"
+msgstr "Inventory Type"
+
+#: .\aircrafts\models\inventory_models.py:28
+msgid "Inventory type"
+msgstr "Inventory type"
+
+#: .\aircrafts\models\inventory_models.py:32
+msgid "Produced By"
+msgstr "Produced By"
+
+#: .\aircrafts\models\inventory_models.py:32
+msgid "Produced by"
+msgstr "Produced by"
+
+#: .\aircrafts\models\inventory_models.py:34
+msgid "Production date of inventory"
+msgstr "Production date of inventory"
+
+#: .\aircrafts\models\inventory_models.py:35
+msgid "Is Used"
+msgstr "Is Used"
+
+#: .\aircrafts\models\inventory_models.py:36
+msgid "Was inventory used in an aircraft?"
+msgstr "Was inventory used in an aircraft?"
+
+#: .\aircrafts\models\inventory_models.py:39
+msgid "Inventory"
+msgstr "Inventory"
+
+#: .\aircrafts\models\inventory_models.py:40
+msgid "Inventories"
+msgstr "Inventories"
+
+#: .\aircrafts\models\inventory_models.py:68
+#: .\aircrafts\serializers\inventory_serializers.py:19
+msgid "You do not have permission to create this inventory."
+msgstr "You do not have permission to create this inventory."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:19
+msgid "You do not have permission to assembly an airplane."
+msgstr "You do not have permission to assembly an airplane."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:23 .\aircrafts\signals.py:13
+msgid "Fuselage inventory type must match the aircraft type."
+msgstr "Fuselage inventory type must match the aircraft type."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:25 .\aircrafts\signals.py:15
+msgid "Tail inventory type must match the aircraft type."
+msgstr "Tail inventory type must match the aircraft type."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:27 .\aircrafts\signals.py:19
+msgid "The selected fuselage has already been used."
+msgstr "The selected fuselage has already been used."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:29 .\aircrafts\signals.py:21
+msgid "The selected tail has already been used."
+msgstr "The selected tail has already been used."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:34
+msgid "An aircraft must have exactly 2 wings."
+msgstr "An aircraft must have exactly 2 wings."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:37 .\aircrafts\signals.py:29
+msgid "One of the selected wings has already been used."
+msgstr "One of the selected wings has already been used."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:39 .\aircrafts\signals.py:31
+msgid "Wing inventory type must match the aircraft type."
+msgstr "Wing inventory type must match the aircraft type."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:44 .\aircrafts\signals.py:39
+msgid "One of the selected avionics has already been used."
+msgstr "One of the selected avionics has already been used."
+
+#: .\aircrafts\serializers\aircraft_serializers.py:46 .\aircrafts\signals.py:41
+msgid "Avionics inventory type must match the aircraft type."
+msgstr "Avionics inventory type must match the aircraft type."
+
+#: .\aircrafts\views\aircraft_views_api.py:56
+#: .\aircrafts\views\inventory_views_api.py:57
+msgid "You do not have permission to delete this inventory."
+msgstr "You do not have permission to delete this inventory."
+
+#: .\aircrafts\views\inventory_views_api.py:61
+msgid "This inventory has been used and cannot be deleted."
+msgstr "This inventory has been used and cannot be deleted."
