@@ -11,13 +11,17 @@ env.read_env(
 def login_view(request):
     context = {
         'client_id': env.str('CLIENT_ID_TOKEN'),
-        'client_secret': env.str('CLIENT_SECRET_TOKEN')
+        'client_secret': env.str('CLIENT_SECRET_TOKEN'),
+        'token_url': env.str('TOKEN_URL')
     }
     return render(request, 'login.html', context)
 
 
 def home(request):
-    return render(request, 'home.html')
+    context = {
+        'token_url': env.str('TOKEN_URL')
+    }
+    return render(request, 'home.html', context)
 
 
 def inventories(request):

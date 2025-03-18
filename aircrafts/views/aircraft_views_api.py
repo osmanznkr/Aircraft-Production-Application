@@ -56,8 +56,12 @@ class AircraftViewSet(mixins.CreateModelMixin,
         return serializers.AircraftRetrieveSerializer
 
     def get_queryset(self):
-        # Only allow ASSEMBLY team to view the queryset
-        user_team = self.request.user.profile.team.team
-        if user_team == 'ASSEMBLY':
-            return super().get_queryset()
+        try:
+            # Only allow ASSEMBLY team to view the queryset
+            user_team = self.request.user.profile.team.team
+            if user_team and user_team == 'ASSEMBLY':
+                return super().get_queryset()
+        except AttributeError:
+            # If the user does not have a profile or team, return an empty queryset
+            return super().get_queryset().none()
         return super().get_queryset().none()

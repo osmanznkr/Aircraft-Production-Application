@@ -14,9 +14,7 @@ services:
         condition: service_started
     volumes:
       - .:/app
-    restart:
-        on-failure
-  
+
   db:
     image: postgres:17
     environment:
@@ -28,7 +26,11 @@ services:
     networks:
       - default
     volumes:
-      - ./pg-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
 
 networks:
   default:
