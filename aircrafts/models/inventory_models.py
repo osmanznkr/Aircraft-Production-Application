@@ -1,6 +1,7 @@
 import datetime
 import random
 
+from auditlog.registry import auditlog
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -25,7 +26,7 @@ class Inventory(BaseModel):
     serial_number = models.CharField(max_length=50, verbose_name=_('Serial Number'),
                                      help_text=_('Serial number of inventory'), unique=True, blank=True)
     inventory_type = models.CharField(max_length=50, choices=configs.INVENTORY_TYPES, verbose_name=_('Inventory Type'),
-                                 help_text=_('Inventory type'))
+                                      help_text=_('Inventory type'))
     aircraft_type = models.CharField(max_length=50, choices=configs.AIRCRAFT_TYPES, verbose_name=_('Aircraft Type'),
                                      help_text=_('Aircraft type'))
     produced_by = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='produced_inventories',
@@ -72,3 +73,6 @@ class Inventory(BaseModel):
         if not self.serial_number:
             self.serial_number = self.generate_serial_number()
         super(Inventory, self).save(*args, **kwargs)
+
+
+auditlog.register(Inventory)

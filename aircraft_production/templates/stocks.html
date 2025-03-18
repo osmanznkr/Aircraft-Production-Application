@@ -128,91 +128,118 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    $(document).ready(function() {
-        var token = localStorage.getItem('access_token'); // Token'ı localStorage'dan al
+   $(document).ready(function() {
+    var token = localStorage.getItem('access_token'); // Token'ı localStorage'dan al
+    var lang = localStorage.getItem('language') || 'en';
 
-        // Function to load select options
-        function loadSelectOptions(url, selectId) {
-            $.ajax({
-                url: url,
-                method: 'GET',
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function(data) {
-                    var select = $(selectId);
-                    select.empty();
-                    select.append('<option value="">All</option>');
-                    data.results.forEach(function(item) {
-                        select.append('<option value="' + item.type + '">' + item.name + '</option>');
+    // Function to load select options
+    function loadSelectOptions(url, selectId) {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                var select = $(selectId);
+                select.empty();
+                select.append('<option value="">' + (lang === 'tr' ? 'Hepsi' : 'All') + '</option>');
+                data.results.forEach(function(item) {
+                    select.append('<option value="' + item.type + '">' + item.name + '</option>');
+                });
+            },
+            error: function(xhr) {
+                var response = xhr.responseJSON;
+                if (response && response.errors && response.errors[0].code === "not_authenticated") {
+                    window.location.href = "/" + lang + "/login"; // Redirect to login page
+                } else {
+                    console.error('Error loading select options:', xhr);
+                }
+            }
+        });
+    }
+
+    // Load aircraft types
+    loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#aircraftType');
+
+    function loadTable(filters) {
+        $('#stocksTable').DataTable({
+            "destroy": true, // Existing table instance will be destroyed before reinitializing
+            "ajax": {
+                "url": "/" + lang + "/aircrafts/inventories/stocks",
+                "data": filters,
+                "dataSrc": function(json) {
+                    // Calculate totals
+                    var totalStock = 0;
+                    var allocatedStock = 0;
+                    var availableStock = 0;
+
+                    json.results.forEach(function(item) {
+                        totalStock += item.total_stock;
+                        allocatedStock += item.allocated_stock;
+                        availableStock += item.available_stock;
                     });
-                }
-            });
-        }
 
-        // Load aircraft types
-        loadSelectOptions('/aircrafts/aircraft-types', '#aircraftType');
+                    // Update totals in the DOM
+                    $('#totalStock').text(totalStock);
+                    $('#allocatedStock').text(allocatedStock);
+                    $('#availableStock').text(availableStock);
 
-        function loadTable(filters) {
-            $('#stocksTable').DataTable({
-                "destroy": true, // Existing table instance will be destroyed before reinitializing
-                "ajax": {
-                    "url": "/aircrafts/inventories/stocks",
-                    "data": filters,
-                    "dataSrc": function(json) {
-                        // Calculate totals
-                        var totalStock = 0;
-                        var allocatedStock = 0;
-                        var availableStock = 0;
-
-                        json.results.forEach(function(item) {
-                            totalStock += item.total_stock;
-                            allocatedStock += item.allocated_stock;
-                            availableStock += item.available_stock;
-                        });
-
-                        // Update totals in the DOM
-                        $('#totalStock').text(totalStock);
-                        $('#allocatedStock').text(allocatedStock);
-                        $('#availableStock').text(availableStock);
-
-                        return json.results;
-                    },
-                    "beforeSend": function(xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer " + token); // Authorization header'ını ayarla
-                    }
+                    return json.results;
                 },
-                "columns": [
-                    { "data": "inventory_type" },
-                    { "data": "total_stock" },
-                    { "data": "allocated_stock" },
-                    { "data": "available_stock" }
-                ],
-                "language": {
-                    "paginate": {
-                        "previous": "Previous",
-                        "next": "Next"
+                "beforeSend": function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + token); // Authorization header'ını ayarla
+                },
+                "error": function(xhr) {
+                    var response = xhr.responseJSON;
+                    if (response && response.errors && response.errors[0].code === "not_authenticated") {
+                        window.location.href = "/" + lang + "/login"; // Redirect to login page
+                    } else {
+                        var errorMessage = response && response.detail ? response.detail : 'An error occurred while loading data.';
+                        $('#errorModalBody').text("Error: " + errorMessage); // Set error message in modal body
+                        $('#errorModal').modal('show'); // Show error modal
                     }
                 }
-            });
-        }
-
-        // Initial load
-        loadTable({});
-
-        // Filter form submit event
-        $('#filterForm').on('submit', function(e) {
-            e.preventDefault();
-            var filters = {
-                aircraft_type: $('#aircraftType').val()
-            };
-            loadTable(filters);
+            },
+            "columns": [
+                { "data": "inventory_type" },
+                { "data": "total_stock" },
+                { "data": "allocated_stock" },
+                { "data": "available_stock" }
+            ],
+            "language": {
+                "paginate": {
+                    "previous": lang === 'tr' ? 'Önceki' : 'Previous',
+                    "next": lang === 'tr' ? 'Sonraki' : 'Next'
+                }
+            }
         });
+    }
 
-        // Clear token on logout
-        $('#logoutForm').on('submit', function() {
-            localStorage.removeItem('access_token');
-        });
+    // Initial load
+    loadTable({});
+
+    // Filter form submit event
+    $('#filterForm').on('submit', function(e) {
+        e.preventDefault();
+        var filters = {
+            aircraft_type: $('#aircraftType').val()
+        };
+        loadTable(filters);
     });
+
+    // Clear token on logout
+    $('#logoutForm').on('submit', function() {
+        localStorage.removeItem('access_token');
+    });
+
+    // Set language switch based on localStorage
+    $('#languageSwitch').prop('checked', lang === 'tr');
+    $('#languageSwitch').on('change', function() {
+        var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
+        localStorage.setItem('language', selectedLang);
+        location.reload();
+    });
+});
 </script>
 {% endblock %}

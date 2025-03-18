@@ -24,49 +24,60 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Aircraft Management</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'inventories' %}">Inventories</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'stocks' %}">Stocks</a>
-                </li>
-                <li class="nav-item" id="managersNavItem" style="display: none;">
-                    <a class="nav-link" href="{% url 'managers' %}">Manager</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown" id="userDropdownContainer">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i> User
+    <a class="navbar-brand" href="#">Aircraft Management</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'inventories' %}">Inventories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'stocks' %}">Stocks</a>
+            </li>
+            <li class="nav-item" id="managersNavItem" style="display: none;">
+                <a class="nav-link" href="{% url 'managers' %}">Manager</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown" id="userDropdownContainer">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user"></i> User
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="#">
+                        <strong>Username:</strong> <span id="profileUsername"></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">
-                            <strong>Username:</strong> <span id="profileUsername"></span>
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <strong>Email:</strong> <span id="profileEmail"></span>
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <strong>Team:</strong> <span id="profileTeam"></span>
-                        </a>
-                    </div>
-                </li>
-            </ul>
-            <form id="logoutForm" method="post" action="{% url 'logout' %}" class="form-inline my-2 my-lg-0">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger my-2 my-sm-0">Logout</button>
-            </form>
-        </div>
-    </nav>
+                    <a class="dropdown-item" href="#">
+                        <strong>Email:</strong> <span id="profileEmail"></span>
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <strong>Team:</strong> <span id="profileTeam"></span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item d-flex align-items-center ml-3" style="margin-right: 15px;">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="languageSwitch">
+                    <label class="custom-control-label" for="languageSwitch"
+                           style="color: #f8f9fa; font-weight: 500; padding-left: 8px;">
+                        TR
+                    </label>
+                </div>
+            </li>
+
+
+        </ul>
+        <form id="logoutForm" method="post" action="{% url 'logout' %}" class="form-inline my-2 my-lg-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger my-2 my-sm-0">Logout</button>
+        </form>
+    </div>
+</nav>
     <div class="container-fluid container-fluid-custom mt-4">
         {% block content %}{% endblock %}
     </div>
@@ -77,9 +88,10 @@
     <script>
         function getUserProfile() {
             var token = localStorage.getItem('access_token');
+            var lang = localStorage.getItem('language') || 'en';
             if (token) {
                 $.ajax({
-                    url: "http://127.0.0.1:8000/tr/accounts/my-profile",
+                    url: "http://127.0.0.1:8000/" + lang + "/accounts/my-profile",
                     method: "GET",
                     beforeSend: function(xhr) {
                         xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -89,7 +101,7 @@
                         $('#profileUsername').text(data.username);
                         $('#profileEmail').text(data.email);
                         $('#profileTeam').text(data.team.name);
-                        checkPermissions(token);
+                        checkPermissions(token, lang);
                     },
                     error: function() {
                         console.log("Kullanıcı bilgileri alınamadı.");
@@ -101,9 +113,9 @@
             }
         }
 
-        function checkPermissions(token) {
+        function checkPermissions(token, lang) {
             $.ajax({
-                url: "http://127.0.0.1:8000/tr/permissions/my",
+                url: "http://127.0.0.1:8000/" + lang + "/permissions/my",
                 method: "GET",
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -123,6 +135,13 @@
         }
 
         $(document).ready(function() {
+            var lang = localStorage.getItem('language') || 'en';
+            $('#languageSwitch').prop('checked', lang === 'tr');
+            $('#languageSwitch').on('change', function() {
+                var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
+                localStorage.setItem('language', selectedLang);
+                location.reload();
+            });
             getUserProfile(); // Kullanıcı bilgilerini al
         });
     </script>
