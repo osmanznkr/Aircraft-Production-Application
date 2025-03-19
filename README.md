@@ -189,9 +189,9 @@ The Aircraft Production Application is designed to manage the production and inv
 
 7. When assembling an airplane, the assembly team member displays the missing parts for the selected airplane.
 
-![assembly-create-1](https://github.com/user-attachments/assets/16d30996-e6b4-4e6d-8dde-1ea7da57c19e)
+![aaa-1](https://github.com/user-attachments/assets/7bc81072-d70c-4371-b4bf-528092a49e70)
 
-![assembly-create-2](https://github.com/user-attachments/assets/117280fc-85e6-434f-a939-70d6c56cdd1a)
+![aaa2](https://github.com/user-attachments/assets/76a80b11-f548-486f-9186-c90f708c891c)
 
 8. An employee in the assembly team is not authorized to create inventory and will receive an error if they do so.
 
