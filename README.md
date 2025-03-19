@@ -23,6 +23,7 @@ The Aircraft Production Application is designed to manage the production and inv
 - **jQuery**: JavaScript library for simplifying HTML DOM manipulation
 - **AJAX**: Technique for creating asynchronous web applications
 - **Bootstrap**: CSS framework for responsive web design
+- **DataTables**: jQuery plugin for enhancing HTML tables
 
 ## Libraries Used
 - **django**: The main web framework used for building the application.
