@@ -144,7 +144,73 @@ The Aircraft Production Application is designed to manage the production and inv
 ## How to works this project
 
 1. Users can login to the system with their credentials.
-![login.png](../../../Desktop/screenshots/login.png)
+   
+![login](https://github.com/user-attachments/assets/bc18d070-2994-4de0-b740-15fd008992e7)
+
+2. Inventory team members cannot view the manufactured aircraft list.
+
+![wing-home](https://github.com/user-attachments/assets/9aa6ad08-aba6-4ae3-afe4-b8b16c412e6c)
+
+3. People in inventory teams can only view and produce parts that their team has produced.
+
+![wing-inventory](https://github.com/user-attachments/assets/cafe8b3b-5daf-44f9-a069-e84c70c5883a)
+
+![wing-new-inventory](https://github.com/user-attachments/assets/e9cfd943-7455-49a7-a76d-ffaae5591c26)
+
+4. The user can filter the parts produced in their team according to the aircraft and if the part is used, they can view the information on which aircraft it was used.
+
+![wing-new-inventory](https://github.com/user-attachments/assets/1a354dca-9ad6-4ec4-871c-fb311fe32198)
+
+![wing-detail](https://github.com/user-attachments/assets/cf107692-1d8b-4da2-a23f-afbecf3c83f2)
+
+5. With advanced language support, the user can view data from the backend via the switch button at the top right of the navbar.
+
+![wing-language-1](https://github.com/user-attachments/assets/e55f3ab8-04e6-461b-b11c-55daee4f52ac)
+
+![wing-language-2](https://github.com/user-attachments/assets/50bac8ae-79ae-42d9-9553-e9f3172f1452)
+
+6. The person in the assembly team can view the list of aircraft, see the inventories used, filter and assemble aircraft.
+
+![assembly-home](https://github.com/user-attachments/assets/738c9141-0b4b-416d-b74a-81b3b60658d6)
+
+![assembly-filter](https://github.com/user-attachments/assets/91ef3cd2-c227-4afa-87c1-c406e0c332ab)
+
+![assembly-detail](https://github.com/user-attachments/assets/c40be0d0-57b8-420d-ab69-c272b52c94d1)
+
+7. When assembling an airplane, the assembly team member displays the missing parts for the selected airplane.
+
+![assembly-create-1](https://github.com/user-attachments/assets/16d30996-e6b4-4e6d-8dde-1ea7da57c19e)
+
+![assembly-create-2](https://github.com/user-attachments/assets/117280fc-85e6-434f-a939-70d6c56cdd1a)
+
+8. An employee in the assembly team is not authorized to create inventory and will receive an error if they do so.
+
+![assembly-error](https://github.com/user-attachments/assets/86441ec2-6c09-4177-a583-fae82999f14e)
+
+9. An employee in the assembly team displays all the stocks, filters the stocks and dynamically displays all the data such as how many parts of which airplane, how many parts are used, how many are ready for use.
+
+![assembly-stocks-1](https://github.com/user-attachments/assets/31fbb85e-8a3e-4762-a6b0-34b6e0e52a2f)
+
+![assembly-stocks-2](https://github.com/user-attachments/assets/70132a3c-3629-4e5c-94d9-1949840e577a)
+
+
+10.A person with managerial authority displays the employees and how many employees are on which team and how many people work on which team.
+
+![manager-1](https://github.com/user-attachments/assets/3cfe4a50-0b2e-449d-a8ec-a5ba9eee9a60)
+
+![manager-3](https://github.com/user-attachments/assets/a165f3b1-ee93-41cc-be36-af8ee4c4f043)
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Contact
 For any questions or inquiries, please contact [osmanznkr@gmail.com].
