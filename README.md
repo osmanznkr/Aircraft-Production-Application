@@ -4,6 +4,8 @@
 The Aircraft Production Application is designed to manage the production and inventory of aircraft components. It provides functionalities for creating, retrieving, listing, updating, and deleting various aircraft and inventory items. The application ensures that all inventory items are properly validated and tracked throughout the production process.
 
 ## Technologies Used
+
+### Backend
 - **Programming Language**: Python
 - **Framework**: Django
 - **Database**: PostgreSQL (or any other database supported by Django)
@@ -13,6 +15,14 @@ The Aircraft Production Application is designed to manage the production and inv
 - **Serialization**: Django REST Framework serializers
 - **Signals**: Django signals for validation and state management
 - **Audit Logging**: Django Auditlog
+
+### Frontend
+- **HTML**: Markup language for creating web pages
+- **CSS**: Styling language for designing web pages
+- **JavaScript**: Programming language for creating dynamic web content
+- **jQuery**: JavaScript library for simplifying HTML DOM manipulation
+- **AJAX**: Technique for creating asynchronous web applications
+- **Bootstrap**: CSS framework for responsive web design
 
 ## Libraries Used
 - **django**: The main web framework used for building the application.
