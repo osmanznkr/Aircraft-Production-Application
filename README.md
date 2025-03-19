@@ -24,6 +24,7 @@ The Aircraft Production Application is designed to manage the production and inv
 - **django-oauth-toolkit**: OAuth2 provider for Django and Django REST Framework.
 - **django-filter**: Provides filtering capabilities for Django REST Framework.
 - **django-auditlog**: Provides audit logging for Django models.
+- **django-cors-headers**: Django app for handling the server headers required for Cross-Origin Resource Sharing (CORS).
 
 ## Project Structure
 - `models.py`: Contains the database models for User, Team, Profile, Aircraft, and Inventory.
@@ -39,42 +40,75 @@ The Aircraft Production Application is designed to manage the production and inv
 ## Installation
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/aircraft-production-application.git
+    git clone https://github.com/osmanznkr/aircraft-production-application.git
     cd aircraft-production-application
     ```
 
-2. **Create a virtual environment**:
-    ```sh
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
+2. **Generate secret key for .env**:
+    - Generate a new secret key using the following command:
+        ```sh
+        python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+        ```
 
-3. **Install dependencies**:
-    ```sh
-    pip install -r requirements.txt
-    ```
-
-4. **Create and set up the database**:
-    ```sh
-    python manage.py makemigrations
-    python manage.py migrate
-    ```
+3. **Edit .env file**:
+    - Create a new `.env` file in the root directory of the project.
+    - Add the following environment variables to the `.env` file:
+        ```sh
+        SECRET_KEY=your_secret_key
+        DEBUG=True
+        ALLOWED_HOSTS=127.0.0.1 localhost
+        NAME=name
+        USER=user
+        PASSWORD=password
+        RESOURCE_SERVER_INTROSPECTION_URL=http://127.0.0.1:8000/o/introspect/
+        TOKEN_URL=http://127.0.0.1:8000/o/token/
+       
+      
+4. **Run docker commands**:
+    - Run dokcer compose commands:
+        ```sh
+        docker-compose up --build
+        ```
 
 5. **Create a superuser**:
     ```sh
-    python manage.py createsuperuser
+    docker compose exec backend python manage.py createsuperuser
     ```
 
-6. **Run the development server**:
-    ```sh
-    python manage.py runserver
-    ```
+6. **Create password application for Oauth2**:
+    - Navigate to `http://127.0.0.1:8000/aircraft-admin`
+    - Log in with the superuser credentials
+    - Create a new application with the following details:
+        - Name: `Aircraft Production Application`
+        - Client Type: `Confidential`
+        - Authorization Grant Type: `Resource owner password-based`
+        - Get the client id and client secret without saving them
+        - Add the client id and client secret to the `.env` file:
+            ```sh
+            CLIENT_ID_TOKEN=password_flows_client_id
+            CLIENT_SECRET_TOKEN=password_flows_client_secret
+            ```
+        - Save the application
+
+7. **Create client application for Oauth2**:
+    - Create a new application with the following details:
+        - Name: `Aircraft Production Application`
+        - Client Type: `Confidential`
+        - Authorization Grant Type: `Credentials`
+        - Get the client id and client secret without saving them
+        - Add the client id and client secret to the `.env` file:
+            ```sh
+            CLIENT_ID=credentials_flows_client_id
+            CLIENT_SECRET=credentials_flows_client_secret
+            ```
+        - Save the application
 
 ## Usage
 1. **Access the admin site**:
     - Navigate to `http://127.0.0.1:8000/aircraft-admin`
     - Log in with the superuser credentials
     - Manage users, teams, profiles, aircraft, and inventory items
+    - Create  all teams and assign users profiles to teams
 
 2. **API Endpoints**:
     - `GET /aircrafts/`: List all aircraft
@@ -87,9 +121,25 @@ The Aircraft Production Application is designed to manage the production and inv
     - `DELETE /inventories/{serial_number}/`: Delete an inventory item by serial number
     - `GET /inventory-counts/`: List inventory counts
 
-3. **Permissions**:
+3. **Set the permissions for users**:
     - Only users with the appropriate permissions can create, update, or delete aircraft and inventory items.
     - Users can only manage inventory items associated with their own team.
+    - Inventory teams must have to these permissions to CRUD inventory items:
+        - `Aircrafts | Inventory | Can change inventory`
+        - `Aircrafts | Inventory | Can add inventory`
+        - `Aircrafts | Inventory | Can delete inventory`
+        - `Aircrafts | Inventory | Can view inventory`
+      
+    - Assembly teams must have to these permissions to CRUD aircraft items:
+        - `Aircrafts | Aircraft | Can change aircraft`
+        - `Aircrafts | Aircraft | Can add aircraft`
+        - `Aircrafts | Aircraft | Can view aircraft` 
+        - `Aircrafts | Inventory | Can view inventory`
+
+    - Managers must have to these permissions to CRUD aircraft and inventory items:
+        - `Aircrafts | Aircraft | Can view aircraft`
+        - `Aircrafts | Inventory | Can view inventory`
+        - `Accounts | User | Can view User`
 
 ## Contact
 For any questions or inquiries, please contact [osmanznkr@gmail.com].
