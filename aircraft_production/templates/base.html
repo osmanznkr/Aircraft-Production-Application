@@ -86,64 +86,67 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script> <!-- Font Awesome -->
     <script>
-        function getUserProfile() {
-            var token = localStorage.getItem('access_token');
-            var lang = localStorage.getItem('language') || 'en';
-            if (token) {
-                $.ajax({
-                    url: "{{ token_url }} + lang + "/accounts/my-profile",
-                    method: "GET",
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
-                    },
-                    success: function(data) {
-                        $('#userDropdown').text(data.first_name + " " + data.last_name);
-                        $('#profileUsername').text(data.username);
-                        $('#profileEmail').text(data.email);
-                        $('#profileTeam').text(data.team.name);
-                        checkPermissions(token, lang);
-                    },
-                    error: function() {
-                        console.log("Kullanıcı bilgileri alınamadı.");
-                    }
-                });
-            } else {
-                $('#logoutForm').hide();
-                $('#userDropdownContainer').hide();
+$(document).ready(function() {
+    var lang = localStorage.getItem('language') || 'en';
+    $('#languageSwitch').prop('checked', lang === 'tr');
+    $('#languageSwitch').on('change', function() {
+        var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
+        localStorage.setItem('language', selectedLang);
+        location.reload();
+    });
+    getUserProfile(); // Ensure this function is called on page load
+});
+
+function getUserProfile() {
+    var token = localStorage.getItem('access_token');
+    var lang = localStorage.getItem('language') || 'en';
+    if (token) {
+        console.log("Token found, making AJAX request to my-profile endpoint.");
+        $.ajax({
+            url: "/accounts/my-profile", // Ensure this URL is correct
+            method: "GET",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function(data) {
+                console.log("User profile data received:", data);
+                $('#userDropdown').text(data.first_name + " " + data.last_name);
+                $('#profileUsername').text(data.username);
+                $('#profileEmail').text(data.email);
+                $('#profileTeam').text(data.team.name);
+                checkPermissions(token, lang);
+            },
+            error: function() {
+                console.log("Failed to fetch user profile data.");
             }
-        }
-
-        function checkPermissions(token, lang) {
-            $.ajax({
-                url: "{{ token_url }} + lang + "/permissions/my",
-                method: "GET",
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function(data) {
-                    var hasViewUserPermission = data.some(function(permission) {
-                        return permission.codename === 'view_user';
-                    });
-                    if (hasViewUserPermission) {
-                        $('#managersNavItem').show();
-                    }
-                },
-                error: function() {
-                    console.log("Kullanıcı izinleri alınamadı.");
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            var lang = localStorage.getItem('language') || 'en';
-            $('#languageSwitch').prop('checked', lang === 'tr');
-            $('#languageSwitch').on('change', function() {
-                var selectedLang = $(this).is(':checked') ? 'tr' : 'en';
-                localStorage.setItem('language', selectedLang);
-                location.reload();
-            });
-            getUserProfile(); // Kullanıcı bilgilerini al
         });
+    } else {
+        console.log("No token found, hiding user-related elements.");
+        $('#logoutForm').hide();
+        $('#userDropdownContainer').hide();
+    }
+}
+
+function checkPermissions(token, lang) {
+    $.ajax({
+        url: "/permissions/my", // Ensure this URL is correct
+        method: "GET",
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function(data) {
+            var hasViewUserPermission = data.some(function(permission) {
+                return permission.codename === 'view_user';
+            });
+            if (hasViewUserPermission) {
+                $('#managersNavItem').show();
+            }
+        },
+        error: function() {
+            console.log("Failed to fetch user permissions.");
+        }
+    });
+}
     </script>
 </body>
 </html>
