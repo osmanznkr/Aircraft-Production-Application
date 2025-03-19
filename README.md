@@ -136,7 +136,7 @@ The Aircraft Production Application is designed to manage the production and inv
         - `Aircrafts | Aircraft | Can view aircraft` 
         - `Aircrafts | Inventory | Can view inventory`
 
-    - Managers must have to these permissions to CRUD aircraft and inventory items:
+    - Managers must have to these permissions to see aircraft and inventory items and manage users:
         - `Aircrafts | Aircraft | Can view aircraft`
         - `Aircrafts | Inventory | Can view inventory`
         - `Accounts | User | Can view User`
