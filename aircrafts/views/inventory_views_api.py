@@ -58,7 +58,9 @@ class InventoryViewSet(mixins.CreateModelMixin,
 
     # This method was used to control that the user can only produce a inventory associated with their own team.
     def get_queryset(self):
-        user_team = self.request.user.profile.team.team
+        user_team = getattr(self.request.user.profile.team, 'team', None)
+        if user_team is None:
+            return self.queryset.none()
         if user_team == 'ASSEMBLY':
             return super().get_queryset()
         return super().get_queryset().filter(inventory_type=user_team)
