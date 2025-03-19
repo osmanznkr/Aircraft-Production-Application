@@ -464,7 +464,7 @@ $(document).ready(function() {
     var token = localStorage.getItem('access_token');
     var lang = localStorage.getItem('language') || 'en';
 
-    // Function to load select options
+     // Function to load select options
     function loadSelectOptions(url, selectId) {
         $.ajax({
             url: url,
@@ -475,22 +475,23 @@ $(document).ready(function() {
             success: function(data) {
                 var select = $(selectId);
                 select.empty();
-                select.append('<option value="">' + (lang === 'tr' ? 'Uçak Tipi Seçin' : 'Select Aircraft Type') + '</option>');
+                select.append('<option value="">' + (lang === 'tr' ? 'Hepsi' : 'All') + '</option>');
                 data.results.forEach(function(item) {
                     select.append('<option value="' + item.type + '">' + item.name + '</option>');
                 });
             },
-            error: function(xhr, status, error) {
-                console.error('Error loading select options:', error);
+            error: function(xhr) {
+                console.error('Error loading select options:', xhr);
             }
         });
     }
 
+    // Load aircraft types on page load
+    loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#aircraftType');
+
     // Load aircraft types when modal is shown
     $('#createAircraftModal').on('show.bs.modal', function() {
         loadSelectOptions('/' + lang + '/aircrafts/aircraft-types', '#aircraftTypeSelect');
-        // Clear previous warnings
-        $('.alert-warning').remove();
     });
 
     // Load Inventory Options
