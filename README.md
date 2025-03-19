@@ -141,5 +141,11 @@ The Aircraft Production Application is designed to manage the production and inv
         - `Aircrafts | Inventory | Can view inventory`
         - `Accounts | User | Can view User`
 
+## How to works this project
+
+1. Users can login to the system with their credentials.
+![login.png](../../../Desktop/screenshots/login.png)
+
 ## Contact
 For any questions or inquiries, please contact [osmanznkr@gmail.com].
+
