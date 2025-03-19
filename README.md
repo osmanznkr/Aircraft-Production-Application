@@ -121,17 +121,16 @@ The Aircraft Production Application is designed to manage the production and inv
     - Create  all teams and assign users profiles to teams
 
 2. **API Endpoints**:
-    - `GET /aircrafts/`: List all aircraft
-    - `POST /aircrafts/`: Create a new aircraft
-    - `GET /aircrafts/{serial_number}/`: Retrieve an aircraft by serial number
-    - `PUT /aircrafts/{serial_number}/`: Update an aircraft by serial number
-    - `GET /inventories/`: List all inventory items
-    - `POST /inventories/`: Create a new inventory item
-    - `GET /inventories/{serial_number}/`: Retrieve an inventory item by serial number
-    - `DELETE /inventories/{serial_number}/`: Delete an inventory item by serial number
-    - `GET /inventory-counts/`: List inventory counts
 
-3. **Set the permissions for users**:
+![swagger-1](https://github.com/user-attachments/assets/a6a1e1b3-a8cd-4e04-bcf6-66a36996422f)
+
+![swagger-2](https://github.com/user-attachments/assets/c1634e7b-fb56-4f61-bab5-88c01cf6b4a0)
+
+3. **Database**:
+
+![database](https://github.com/user-attachments/assets/aac67540-2e8a-4fdf-a3dd-bb71d5a2f5f1)
+
+4. **Set the permissions for users**:
     - Only users with the appropriate permissions can create, update, or delete aircraft and inventory items.
     - Users can only manage inventory items associated with their own team.
     - Inventory teams must have to these permissions to CRUD inventory items:
