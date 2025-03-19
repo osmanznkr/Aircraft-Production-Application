@@ -127,11 +127,8 @@ The Aircraft Production Application is designed to manage the production and inv
 
 ![swagger-2](https://github.com/user-attachments/assets/c1634e7b-fb56-4f61-bab5-88c01cf6b4a0)
 
-3. **Database**:
 
-![database](https://github.com/user-attachments/assets/aac67540-2e8a-4fdf-a3dd-bb71d5a2f5f1)
-
-4. **Set the permissions for users**:
+3. **Set the permissions for users**:
     - Only users with the appropriate permissions can create, update, or delete aircraft and inventory items.
     - Users can only manage inventory items associated with their own team.
     - Inventory teams must have to these permissions to CRUD inventory items:
@@ -209,16 +206,6 @@ The Aircraft Production Application is designed to manage the production and inv
 ![manager-1](https://github.com/user-attachments/assets/3cfe4a50-0b2e-449d-a8ec-a5ba9eee9a60)
 
 ![manager-3](https://github.com/user-attachments/assets/a165f3b1-ee93-41cc-be36-af8ee4c4f043)
-
-
-
-
-
-
-
-
-
-
 
 
 
